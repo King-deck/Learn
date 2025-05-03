@@ -1,122 +1,114 @@
-import random
+import streamlit as st
 
-class Barco:
-    def __init__(self, eslora):
-        self.eslora = eslora
-        self.posiciones = []
-        self.hundido = False
+# ======================================
+# CONFIGURACIÓN BÁSICA
+# ======================================
+st.set_page_config(
+    page_title="Consultoría Estratégica | Nova",
+    page_icon="✨",
+    layout="centered"
+)
 
-    def colocar_barco(self, fila, columna, orientacion, tablero):
-        """Coloca el barco en el tablero según su orientación (horizontal/vertical)."""
-        celdas = []
-        for i in range(self.eslora):
-            if orientacion == 'horizontal':
-                celdas.append((fila, columna + i))
-            else:
-                celdas.append((fila + i, columna))
-        
-        # Verifica si las celdas están libres y dentro del tablero
-        for f, c in celdas:
-            if f >= 10 or c >= 10 or tablero[f][c] != ' ':
-                return False
-        
-        # Coloca el barco
-        for f, c in celdas:
-            tablero[f][c] = 'B'
-            self.posiciones.append((f, c))
-        return True
+# CSS Minimalista
+st.markdown("""
+<style>
+    .header {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+    }
+    .subheader {
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        margin-bottom: 2rem;
+    }
+    .divider {
+        border-top: 1px solid #ecf0f1;
+        margin: 2rem 0;
+    }
+    .service-card {
+        background-color: #f9f9f9;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    .testimonial {
+        font-style: italic;
+        border-left: 3px solid #3498db;
+        padding-left: 1rem;
+        margin: 1.5rem 0;
+    }
+</style>
+""", unsafe_allow_html=True)
 
-class Tablero:
-    def __init__(self):
-        self.tablero = [[' ' for _ in range(10)] for _ in range(10)]
-        self.barcos = []
-    
-    def colocar_barcos_aleatorios(self):
-        """Coloca barcos aleatoriamente en el tablero."""
-        esloras = [5, 4, 3, 3, 2]  # Tipos de barcos
-        for eslora in esloras:
-            barco = Barco(eslora)
-            colocado = False
-            while not colocado:
-                fila = random.randint(0, 9)
-                columna = random.randint(0, 9)
-                orientacion = random.choice(['horizontal', 'vertical'])
-                colocado = barco.colocar_barco(fila, columna, orientacion, self.tablero)
-            self.barcos.append(barco)
-    
-    def imprimir_tablero(self, mostrar_barcos=False):
-        """Muestra el tablero (con o sin barcos)."""
-        print("  " + " ".join([str(i) for i in range(10)]))
-        for i, fila in enumerate(self.tablero):
-            fila_visible = []
-            for celda in fila:
-                if celda == 'B' and not mostrar_barcos:
-                    fila_visible.append(' ')
-                else:
-                    fila_visible.append(celda)
-            print(f"{i} " + " ".join(fila_visible))
+# ======================================
+# CONTENIDO PRINCIPAL
+# ======================================
+st.markdown('<div class="header">Nova Consultoría Estratégica</div>', unsafe_allow_html=True)
+st.markdown('<div class="subheader">Soluciones inteligentes para negocios disruptivos</div>', unsafe_allow_html=True)
 
-    def disparar(self, fila, columna):
-        """Realiza un disparo y devuelve el resultado (agua, impacto, hundido)."""
-        if fila < 0 or fila >= 10 or columna < 0 or columna >= 10:
-            return "Fuera del tablero"
-        
-        if self.tablero[fila][columna] == ' ':
-            self.tablero[fila][columna] = '~'
-            return "Agua"
-        elif self.tablero[fila][columna] == 'B':
-            self.tablero[fila][columna] = 'X'
-            for barco in self.barcos:
-                if (fila, columna) in barco.posiciones:
-                    barco.posiciones.remove((fila, columna))
-                    if not barco.posiciones:
-                        barco.hundido = True
-                        return "¡Barco hundido!"
-                    return "¡Impacto!"
-        else:
-            return "Ya disparaste aquí"
+# Sección Hero
+st.write("""
+Ofrecemos **asesoramiento especializado** en transformación digital, estrategia de mercado 
+y optimización de procesos. Nuestro enfoque basado en datos garantiza resultados medibles 
+y sostenibles para tu organización.
+""")
 
-def juego_batalla_naval():
-    """Función principal del juego."""
-    print("¡Bienvenido a Batalla Naval!")
-    print("Dispara coordenadas (fila y columna, del 0 al 9).")
-    
-    tablero_jugador = Tablero()
-    tablero_maquina = Tablero()
-    
-    tablero_jugador.colocar_barcos_aleatorios()
-    tablero_maquina.colocar_barcos_aleatorios()
-    
-    while True:
-        print("\n--- Tu turno ---")
-        print("Tablero de la Máquina:")
-        tablero_maquina.imprimir_tablero()
-        
-        try:
-            fila = int(input("Fila (0-9): "))
-            columna = int(input("Columna (0-9): "))
-            resultado = tablero_maquina.disparar(fila, columna)
-            print(resultado)
-            
-            # Verifica si la máquina perdió
-            if all(barco.hundido for barco in tablero_maquina.barcos):
-                print("¡Ganaste! Hundiste todos los barcos.")
-                break
-            
-            # Turno de la máquina
-            print("\n--- Turno de la Máquina ---")
-            fila_maq = random.randint(0, 9)
-            columna_maq = random.randint(0, 9)
-            resultado_maq = tablero_jugador.disparar(fila_maq, columna_maq)
-            print(f"La máquina disparó en ({fila_maq}, {columna_maq}): {resultado_maq}")
-            
-            # Verifica si el jugador perdió
-            if all(barco.hundido for barco in tablero_jugador.barcos):
-                print("¡Perdiste! La máquina hundió todos tus barcos.")
-                break
-            
-        except ValueError:
-            print("¡Coordenadas inválidas! Usa números del 0 al 9.")
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    juego_batalla_naval()
+# Servicios
+st.markdown("### 📦 Nuestros Servicios")
+services = [
+    {"name": "Estrategia Digital", "desc": "Desarrollo de roadmap tecnológico personalizado para alcanzar tus objetivos de negocio."},
+    {"name": "Análisis de Datos", "desc": "Extracción de insights accionables a partir de tus fuentes de información."},
+    {"name": "Optimización de Procesos", "desc": "Rediseño de flujos de trabajo para maximizar eficiencia y reducir costos."}
+]
+
+for service in services:
+    st.markdown(f"""
+    <div class="service-card">
+        <strong>{service['name']}</strong>
+        <p>{service['desc']}</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# Testimonios
+st.markdown("### 💬 Lo que dicen nuestros clientes")
+testimonials = [
+    {"text": "Nova transformó nuestra operación logística, reduciendo tiempos de entrega en un 40%.", "author": "Carlos M., Director de Operaciones"},
+    {"text": "El análisis de mercado que realizaron nos permitió identificar 3 nuevas líneas de negocio.", "author": "Ana L., CEO"}
+]
+
+for testimonial in testimonials:
+    st.markdown(f"""
+    <div class="testimonial">
+        <p>"{testimonial['text']}"</p>
+        <strong>- {testimonial['author']}</strong>
+    </div>
+    """, unsafe_allow_html=True)
+
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+# Contacto
+st.markdown("### 📩 Contacto")
+with st.form("contact_form"):
+    name = st.text_input("Nombre completo*")
+    email = st.text_input("Email corporativo*")
+    company = st.text_input("Empresa")
+    message = st.text_area("Cuéntanos sobre tus necesidades*")
+    submitted = st.form_submit_button("Enviar consulta")
+    if submitted:
+        st.success("¡Gracias! Nos pondremos en contacto en menos de 24 horas.")
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<p style="text-align: center; color: #7f8c8d;">
+    © 2024 Nova Consultoría Estratégica | 
+    <a href="#" style="color: #7f8c8d;">Términos</a> | 
+    <a href="#" style="color: #7f8c8d;">Privacidad</a>
+</p>
+""", unsafe_allow_html=True)
