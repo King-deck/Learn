@@ -204,13 +204,7 @@ def main():
                 <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
                      class="main-image">
                 
-                <!-- Texto "Mental" -->
-                <div class="mental-text">Mental</div>
-                
-                <!-- Imagen superpuesta -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image2.png')}" 
-                     class="overlay-image">
-            </div>
+
             """, unsafe_allow_html=True)
 
 # ======================================
