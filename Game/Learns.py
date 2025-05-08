@@ -1,177 +1,99 @@
 import streamlit as st
 from PIL import Image
-import numpy as np
 import os
 
 # ======================================
-# CONFIGURACIÓN INICIAL DE LA PÁGINA
+# CONFIGURACIÓN INICIAL
 # ======================================
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Learnsy - Transformación Mental",
+    page_icon="🧠",
+    layout="wide"
+)
 
 # ======================================
-# ESTILOS CSS PERSONALIZADOS
+# FUNCIONES AUXILIARES
 # ======================================
-custom_css = """
-<style>
-    /* Contenedor principal */
+def cargar_imagen(ruta_imagen, ancho=None):
+    """Carga una imagen con manejo de errores"""
+    try:
+        imagen = Image.open(ruta_imagen)
+        return imagen
+    except Exception as e:
+        st.error(f"Error al cargar {ruta_imagen}: {str(e)}")
+        return None
+
+# ======================================
+# INTERFAZ PRINCIPAL
+# ======================================
+def main():
+    # --- Sección Hero ---
+    st.markdown("""
+    <style>
     .hero-section {
         background-color: #0A0A0A;
         border-radius: 16px;
-        padding: 4rem 2rem;
-        margin-bottom: 3rem;
-    }
-    
-    /* Tipografía */
-    .hero-title {
-        font-family: 'Inter', sans-serif;
-        font-weight: 800;
-        font-size: 3.5rem;
-        color: white;
-        margin-bottom: 1rem;
-    }
-    
-    .hero-subtitle {
-        color: #CCCCCC;
-        font-size: 1.2rem;
+        padding: 2rem;
         margin-bottom: 2rem;
     }
-    
-    /* Botón CTA */
-    .cta-button {
-        background-color: #D94136;
-        color: white !important;
-        border-radius: 50px;
-        padding: 0.8rem 2rem;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s;
-    }
-    
-    .cta-button:hover {
-        transform: scale(1.05);
-        box-shadow: 0 0 15px rgba(217, 65, 54, 0.5);
-    }
-    
-    /* Tarjetas de métricas */
     .metric-box {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba(255,255,255,0.1);
         border-radius: 12px;
-        padding: 1.5rem;
-        margin-right: 1rem;
-        margin-bottom: 1rem;
+        padding: 1rem;
+        margin: 0.5rem;
     }
-    
-    .metric-value {
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: white;
-    }
-    
-    .metric-label {
-        color: #CCCCCC;
-        font-size: 0.9rem;
-    }
-    
-    /* Efectos para imágenes */
-    .image-card {
-        border-radius: 16px;
-        transition: transform 0.5s;
-        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-    }
-    
-    .image-card:hover {
-        transform: perspective(1000px) rotateX(5deg) rotateY(-5deg);
-    }
-    
-    .image-overlay-text {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        font-family: 'Brush Script MT', cursive;
-        color: white;
-        font-size: 2rem;
-    }
-    
-    .highlight-text {
-        color: #00FF88;
-        font-weight: bold;
-    }
-</style>
-"""
-st.markdown(custom_css, unsafe_allow_html=True)
+    </style>
+    """, unsafe_allow_html=True)
+
+    with st.container():
+        st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+        
+        col1, col2 = st.columns([1, 1], gap="large")
+
+        # --- Columna Izquierda (Texto) ---
+        with col1:
+            st.markdown('<h1 style="font-size: 2.5rem; color: white;">Convirtiendo <span style="color: #CCCCCC">adolescentes ambiciosos</span> en Héroes</h1>', unsafe_allow_html=True)
+            st.markdown('<p style="color: #CCCCCC; font-size: 1.1rem;">Domina tu mente, transforma tu realidad. Programa de entrenamiento mental.</p>', unsafe_allow_html=True)
+            
+            # Botón CTA
+            st.button("¡Quiero unirme!", key="cta_button")
+            
+            # Métricas
+            m1, m2, m3 = st.columns(3)
+            with m1:
+                st.markdown('<div class="metric-box"><h3>20K+</h3><p style="color: #CCCCCC">Estudiantes</p></div>', unsafe_allow_html=True)
+            with m2:
+                st.markdown('<div class="metric-box"><h3>400+</h3><p style="color: #CCCCCC">Héroes</p></div>', unsafe_allow_html=True)
+            with m3:
+                st.markdown('<div class="metric-box"><h3>4.9★</h3><p style="color: #CCCCCC">Calificación</p></div>', unsafe_allow_html=True)
+
+        # --- Columna Derecha (Imágenes) ---
+        with col2:
+            # Debug: Mostrar rutas (opcional)
+            if st.checkbox("Mostrar información de depuración"):
+                st.write("Ruta actual:", os.getcwd())
+                st.write("Contenido de Images/:", os.listdir("Images"))
+                st.write("Ruta Images1.png:", os.path.abspath("Images/Image1.png"))
+            
+            # Contenedor de imágenes
+            with st.container():
+                # Imagen principal
+                img_principal = cargar_imagen("Images/Image1.png")
+                if img_principal:
+                    st.image(img_principal, width=400, caption="Transformación personal")
+                
+                # Imagen superpuesta (con posición relativa)
+                with st.container():
+                    st.markdown("<div style='position:relative; top:-50px; left:50px;'>", unsafe_allow_html=True)
+                    img_secundaria = cargar_imagen("Images/Image2.png")
+                    if img_secundaria:
+                        st.image(img_secundaria, width=250, caption="Resultados comprobados")
+                    st.markdown("</div>", unsafe_allow_html=True)
+
+        st.markdown('</div>', unsafe_allow_html=True)
 
 # ======================================
-# SECCIÓN HERO (CONTENIDO PRINCIPAL)
+# EJECUCIÓN
 # ======================================
-with st.container():
-    # Contenedor principal
-    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    
-    # Layout de dos columnas
-    col1, col2 = st.columns([1, 1], gap="large")
-    
-    # Columna izquierda (Texto y métricas)
-    with col1:
-        # Títulos
-        st.markdown(
-            '<h1 class="hero-title">Convirtiendo <span style="color: #CCCCCC">adolescentes ambiciosos</span> en Héroes</h1>',
-            unsafe_allow_html=True
-        )
-        
-        st.markdown(
-            '<p class="hero-subtitle">Domina tu mente, transforma tu realidad. Programa de entrenamiento mental para jóvenes que quieren superar límites.</p>',
-            unsafe_allow_html=True
-        )
-        
-        # Botón CTA
-        st.button(
-            "¡Quiero unirme!",
-            key="cta",
-            help="Comienza tu transformación hoy"
-        )
-        
-        # Métricas (3 columnas)
-        metric_col1, metric_col2, metric_col3 = st.columns(3)
-        
-        with metric_col1:
-            st.markdown(
-                '<div class="metric-box"><div class="metric-value">20K+</div><div class="metric-label">Estudiantes (gratis)</div></div>',
-                unsafe_allow_html=True
-            )
-            
-        with metric_col2:
-            st.markdown(
-                '<div class="metric-box"><div class="metric-value">400+</div><div class="metric-label">Héroes</div></div>',
-                unsafe_allow_html=True
-            )
-            
-        with metric_col3:
-            st.markdown(
-                '<div class="metric-box"><div class="metric-value">4.9<span style="color: #D94136">★</span></div><div class="metric-label">Calificación</div></div>',
-                unsafe_allow_html=True
-            )
-    
-    # Columna derecha (Imágenes)
-    with col2:
-        # Debug: Verificar existencia de imágenes
-        st.write("¿Image1 existe?", os.path.exists("Game/Images/Image1.png"))
-        st.write("¿Image2 existe?", os.path.exists("Game/Images/Image2.png"))
-        
-        # Contenedor de imágenes con efecto 3D
-        st.markdown("""
-        <div style="position: relative;">
-            <!-- Imagen principal -->
-            <img src="Game/Images/Image1.png"
-                 class="image-card" 
-                 style="width: 80%; position: relative; z-index: 1;">
-            <div class="image-overlay-text">Salud <span class="highlight-text">Mental</span></div>
-            
-            <!-- Imagen superpuesta -->
-            <img src="Game/Images/Image2.png"
-                 class="image-card" 
-                 style="width: 60%; position: absolute; right: 0; top: 30%; transform: rotate(-5deg); z-index: 2;">
-        </div>
-        """, unsafe_allow_html=True)
-    
-    # Cierre del contenedor
-    st.markdown('</div>', unsafe_allow_html=True)
+if __name__ == "__main__":
+    main()
