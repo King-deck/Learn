@@ -1,5 +1,5 @@
 import streamlit as st
-from PIL import Image
+import base64
 import os
 
 # ======================================
@@ -10,6 +10,18 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+
+# ======================================
+# FUNCIÓN PARA CONVERTIR IMÁGENES A BASE64
+# ======================================
+def image_to_base64(image_path):
+    """Convierte imágenes a base64 para incrustación directa"""
+    try:
+        with open(image_path, "rb") as img_file:
+            return base64.b64encode(img_file.read()).decode('utf-8')
+    except Exception as e:
+        st.error(f"Error al cargar {image_path}: {str(e)}")
+        return ""
 
 # ======================================
 # ESTILOS CSS PERSONALIZADOS
@@ -37,6 +49,7 @@ st.markdown("""
         color: white;
         margin-bottom: 1rem;
         line-height: 1.2;
+        text-transform: uppercase;
     }
     
     .subtitle {
@@ -55,6 +68,7 @@ st.markdown("""
         border: none;
         font-size: 1rem;
         transition: all 0.3s;
+        cursor: pointer;
     }
     
     .cta-button:hover {
@@ -112,11 +126,17 @@ st.markdown("""
         font-size: 2.5rem;
         z-index: 3;
     }
+    
+    .image-container {
+        position: relative;
+        height: 500px;
+        margin-top: 2rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
 # ======================================
-# SECCIÓN HERO
+# SECCIÓN HERO (CONTENIDO PRINCIPAL)
 # ======================================
 def main():
     # Encabezado
@@ -170,9 +190,16 @@ def main():
         
         # Columna derecha (Imágenes)
         with col2:
-            # Contenedor de imágenes con posición relativa
-            st.markdown("""
-            <div style="position: relative; height: 500px;">
+            # Debug: Verificar rutas de imágenes
+            if st.checkbox("Mostrar información de depuración", False):
+                st.write("Directorio actual:", os.getcwd())
+                st.write("Contenido de Images/:", os.listdir("Images"))
+                st.write("Ruta Image3.png:", os.path.abspath("Images/Image3.png"))
+                st.write("Ruta Image2.png:", os.path.abspath("Images/Image2.png"))
+            
+            # Contenedor de imágenes con Base64
+            st.markdown(f"""
+            <div class="image-container">
                 <!-- Imagen principal -->
                 <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
                      class="main-image">
@@ -184,21 +211,10 @@ def main():
                 <img src="data:image/png;base64,{image_to_base64('Images/Image2.png')}" 
                      class="overlay-image">
             </div>
-            """.format(
-                image_to_base64=image_to_base64,
-                image1_path="Images/Image3.png",
-                image2_path="Images/Image2.png"
-            ), unsafe_allow_html=True)
+            """, unsafe_allow_html=True)
 
-# Función para convertir imágenes a base64
-def image_to_base64(image_path):
-    try:
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode('utf-8')
-    except Exception as e:
-        st.error(f"Error al cargar imagen: {str(e)}")
-        return ""
-
+# ======================================
+# EJECUCIÓN PRINCIPAL
+# ======================================
 if __name__ == "__main__":
-    import base64
     main()
