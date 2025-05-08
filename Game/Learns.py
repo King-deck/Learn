@@ -195,7 +195,7 @@ def main():
                 st.write("Directorio actual:", os.getcwd())
                 st.write("Contenido de Images/:", os.listdir("Images"))
                 st.write("Ruta Image3.png:", os.path.abspath("Images/Image3.png"))
-                st.write("Ruta Image2.png:", os.path.abspath("Images/Image2.png"))
+                st.write("Ruta Image3.png:", os.path.abspath("Images/Image3.png"))
             
             # Contenedor de imágenes con Base64
             st.markdown(f"""
@@ -208,7 +208,7 @@ def main():
                 <div class="mental-text">Mental</div>
                 
                 <!-- Imagen superpuesta -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image2.png')}" 
+                <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
                      class="overlay-image">
             </div>
             """, unsafe_allow_html=True)
