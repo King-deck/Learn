@@ -154,20 +154,20 @@ with st.container():
     # Columna derecha (Imágenes)
     with col2:
         # Debug: Verificar existencia de imágenes
-        st.write("¿First image.png existe?", os.path.exists("Game/Images/First image.png"))
-        st.write("¿Second image.png existe?", os.path.exists("Game/Images/Second image.png"))
+        st.write("¿Image1 existe?", os.path.exists("Game/Images/Image1.png"))
+        st.write("¿Image2 existe?", os.path.exists("Game/Images/Image2.png"))
         
         # Contenedor de imágenes con efecto 3D
         st.markdown("""
         <div style="position: relative;">
             <!-- Imagen principal -->
-            <img src="Game/Images/First image.png"
+            <img src="Game/Images/Image1.png"
                  class="image-card" 
                  style="width: 80%; position: relative; z-index: 1;">
             <div class="image-overlay-text">Salud <span class="highlight-text">Mental</span></div>
             
             <!-- Imagen superpuesta -->
-            <img src="Game/Images/Second image.png"
+            <img src="Game/Images/Image2.png"
                  class="image-card" 
                  style="width: 60%; position: absolute; right: 0; top: 30%; transform: rotate(-5deg); z-index: 2;">
         </div>
