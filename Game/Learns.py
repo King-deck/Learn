@@ -3,6 +3,18 @@ import base64
 import os
 
 # ======================================
+# CONFIGURACIÓN DE RUTAS (IMPORTANTE)
+# ======================================
+# Obtiene la ruta absoluta del directorio actual
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(BASE_DIR, "Images")
+
+# Verificación de carpeta Images
+if not os.path.exists(IMAGES_DIR):
+    st.error(f"❌ Error crítico: No se encontró la carpeta 'Images' en: {IMAGES_DIR}")
+    st.stop()
+
+# ======================================
 # CONFIGURACIÓN INICIAL
 # ======================================
 st.set_page_config(
@@ -12,15 +24,19 @@ st.set_page_config(
 )
 
 # ======================================
-# FUNCIÓN PARA CONVERTIR IMÁGENES A BASE64
+# FUNCIÓN PARA CARGAR IMÁGENES
 # ======================================
-def image_to_base64(image_path):
-    """Convierte imágenes a base64 para incrustación directa"""
+def load_image(image_name):
+    """Carga imágenes como Base64 con manejo de errores detallado"""
+    image_path = os.path.join(IMAGES_DIR, image_name)
     try:
         with open(image_path, "rb") as img_file:
             return base64.b64encode(img_file.read()).decode('utf-8')
+    except FileNotFoundError:
+        st.error(f"Archivo no encontrado: {image_path}")
+        return ""
     except Exception as e:
-        st.error(f"Error al cargar {image_path}: {str(e)}")
+        st.error(f"Error al cargar {image_name}: {str(e)}")
         return ""
 
 # ======================================
@@ -39,6 +55,7 @@ st.markdown("""
         display: flex;
         justify-content: space-between;
         padding: 1rem 2rem;
+        align-items: center;
     }
     
     /* Títulos */
@@ -69,6 +86,7 @@ st.markdown("""
         font-size: 1rem;
         transition: all 0.3s;
         cursor: pointer;
+        text-transform: uppercase;
     }
     
     .cta-button:hover {
@@ -132,6 +150,14 @@ st.markdown("""
         height: 500px;
         margin-top: 2rem;
     }
+    
+    /* Debug panel */
+    .debug-panel {
+        background: rgba(0,0,0,0.7);
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -190,25 +216,28 @@ def main():
         
         # Columna derecha (Imágenes)
         with col2:
-            # Debug: Verificar rutas de imágenes
-            if st.checkbox("Mostrar información de depuración", False):
-                st.write("Directorio actual:", os.getcwd())
-                st.write("Contenido de Images/:", os.listdir("Images"))
-                st.write("Ruta Image3.png:", os.path.abspath("Images/Image3.png"))
-                st.write("Ruta Image2.png:", os.path.abspath("Images/Image2.png"))
+            # Panel de debug (oculto por defecto)
+            debug_expander = st.expander("🔍 Información técnica")
+            with debug_expander:
+                st.markdown("""
+                <div class="debug-panel">
+                    <p><strong>Ruta base:</strong> <code>{}</code></p>
+                    <p><strong>Carpeta Images:</strong> <code>{}</code></p>
+                    <p><strong>Archivos encontrados:</strong> {}</p>
+                </div>
+                """.format(
+                    BASE_DIR,
+                    IMAGES_DIR,
+                    os.listdir(IMAGES_DIR)
+                , unsafe_allow_html=True)
             
-            # Contenedor de imágenes con Base64
+            # Contenedor de imágenes
             st.markdown(f"""
             <div class="image-container">
-                <!-- Imagen principal -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
+                <img src="data:image/png;base64,{load_image('Image3.png')}" 
                      class="main-image">
-                
-                <!-- Texto "Mental" -->
                 <div class="mental-text">Mental</div>
-                
-                <!-- Imagen superpuesta -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image2.png')}" 
+                <img src="data:image/png;base64,{load_image('Image2.png')}" 
                      class="overlay-image">
             </div>
             """, unsafe_allow_html=True)
