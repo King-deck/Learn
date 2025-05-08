@@ -85,7 +85,7 @@ def main():
                 # Imagen superpuesta (con posición relativa)
                 with st.container():
                     st.markdown("<div style='position:relative; top:-50px; left:50px;'>", unsafe_allow_html=True)
-                    img_secundaria = cargar_imagen("Images/Image2.png")
+                    img_secundaria = cargar_imagen("Images/Image3.png")
                     if img_secundaria:
                         st.image(img_secundaria, width=250, caption="Resultados comprobados")
                     st.markdown("</div>", unsafe_allow_html=True)
