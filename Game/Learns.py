@@ -194,21 +194,21 @@ def main():
             if st.checkbox("Mostrar información de depuración", False):
                 st.write("Directorio actual:", os.getcwd())
                 st.write("Contenido de Images/:", os.listdir("Images"))
-                st.write("Ruta Image1.png:", os.path.abspath("Images/Image1.png"))
+                st.write("Ruta Image3.png:", os.path.abspath("Images/Image3.png"))
                 st.write("Ruta Image2.png:", os.path.abspath("Images/Image2.png"))
             
             # Contenedor de imágenes con Base64
             st.markdown(f"""
             <div class="image-container">
                 <!-- Imagen principal -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image1.png')}" 
+                <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
                      class="main-image">
                 
                 <!-- Texto "Mental" -->
                 <div class="mental-text">Mental</div>
                 
                 <!-- Imagen superpuesta -->
-                <img src="data:image/png;base64,{image_to_base64('Images/Image3.png')}" 
+                <img src="data:image/png;base64,{image_to_base64('Images/Image2.png')}" 
                      class="overlay-image">
             </div>
             """, unsafe_allow_html=True)
